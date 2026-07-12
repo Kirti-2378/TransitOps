@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TransitOps | Smart Transport Operations Platform</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<!-- ===================== AUTH SCREEN ===================== -->
+<div id="authScreen" class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="brand-logo"></div>
+      <h1>TransitOps</h1>
+      <p>Smart Transport Operations Platform</p>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <form id="loginForm" class="auth-form">
+      <h2>Sign in</h2>
+      <label>Email</label>
+      <input type="email" id="loginEmail" placeholder="you@transitops.com" required>
+      <label>Password</label>
+      <input type="password" id="loginPassword" placeholder="••••••••" required>
+      <button type="submit" class="btn btn-primary btn-block">Login</button>
+      <p class="auth-switch">No account? <a href="#" id="showRegister">Create one</a></p>
+      <div class="demo-box">
+        <strong>Demo accounts</strong> (password: <code>Pass@123</code>)
+        <ul>
+          <li>fleetmanager@transitops.com — Fleet Manager</li>
+          <li>driver@transitops.com — Driver</li>
+          <li>safety@transitops.com — Safety Officer</li>
+          <li>finance@transitops.com — Financial Analyst</li>
+          <li>customer@transitops.com — Customer</li>
+        </ul>
+      </div>
+    </form>
+
+    <!-- REGISTER FORM -->
+    <form id="registerForm" class="auth-form hidden">
+      <h2>Create account</h2>
+      <label>Full name</label>
+      <input type="text" id="regName" required>
+      <label>Email</label>
+      <input type="email" id="regEmail" required>
+      <label>Contact number</label>
+      <input type="text" id="regContact">
+      <label>Role</label>
+      <select id="regRole">
+        <option value="customer">Customer</option>
+        <option value="driver">Driver</option>
+        <option value="fleet_manager">Fleet Manager</option>
+        <option value="safety_officer">Safety Officer</option>
+        <option value="financial_analyst">Financial Analyst</option>
+      </select>
+      <label>Password</label>
+      <input type="password" id="regPassword" required>
+      <button type="submit" class="btn btn-primary btn-block">Create account</button>
+      <p class="auth-switch">Already have an account? <a href="#" id="showLogin">Sign in</a></p>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== APP SHELL ===================== -->
+<div id="appShell" class="app-shell hidden">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand"> <span>TransitOps</span></div>
+    <nav id="sideNav" class="side-nav"></nav>
+    <div class="sidebar-user">
+      <div class="avatar" id="userAvatar">U</div>
+      <div>
+        <div class="user-name" id="userName">User</div>
+        <div class="user-role" id="userRole">role</div>
+      </div>
+    </div>
+    <button id="logoutBtn" class="btn btn-ghost btn-block">Logout</button>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button id="menuToggle" class="menu-toggle">☰</button>
+      <h1 id="pageTitle">Dashboard</h1>
+    </header>
+
+    <div class="content" id="content">
+
+      <!-- ---------- DASHBOARD ---------- -->
+      <section id="view-dashboard" class="view">
+        <div class="kpi-grid" id="kpiGrid"></div>
+        <div class="grid-2">
+          <div class="card">
+            <h3>Recent Trips</h3>
+            <div class="table-wrap"><table id="recentTripsTable"><thead><tr>
+              <th>ID</th><th>Route</th><th>Vehicle</th><th>Driver</th><th>Status</th>
+            </tr></thead><tbody></tbody></table></div>
+          </div>
+          <div class="card">
+            <h3>Licenses Expiring Soon (30 days)</h3>
+            <div class="table-wrap"><table id="expiringTable"><thead><tr>
+              <th>Driver</th><th>License #</th><th>Expiry</th>
+            </tr></thead><tbody></tbody></table></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- VEHICLES ---------- -->
+      <section id="view-vehicles" class="view hidden">
+        <div class="view-toolbar">
+          <div class="filters">
+            <select id="vFilterType"><option value="">All Types</option></select>
+            <select id="vFilterStatus">
+              <option value="">All Status</option>
+              <option>Available</option><option>On Trip</option><option>In Shop</option><option>Retired</option>
+            </select>
+            <input type="text" id="vFilterRegion" placeholder="Region…">
+            <button class="btn btn-light" id="vFilterApply">Filter</button>
+          </div>
+          <button class="btn btn-primary" id="addVehicleBtn">+ Add Vehicle</button>
+        </div>
+        <div class="table-wrap"><table id="vehiclesTable"><thead><tr>
+          <th>Reg No.</th><th>Name</th><th>Type</th><th>Max Load</th><th>Odometer</th><th>Cost</th><th>Region</th><th>Status</th><th>Actions</th>
+        </tr></thead><tbody></tbody></table></div>
+      </section>
+
+      <!-- ---------- DRIVERS ---------- -->
+      <section id="view-drivers" class="view hidden">
+        <div class="view-toolbar">
+          <div></div>
+          <button class="btn btn-primary" id="addDriverBtn">+ Add Driver</button>
+        </div>
+        <div class="table-wrap"><table id="driversTable"><thead><tr>
+          <th>Name</th><th>License #</th><th>Category</th><th>Expiry</th><th>Contact</th><th>Safety Score</th><th>Status</th><th>Actions</th>
+        </tr></thead><tbody></tbody></table></div>
+      </section>
+
+      <!-- ---------- TRIPS ---------- -->
+      <section id="view-trips" class="view hidden">
+        <div class="view-toolbar">
+          <div class="filters">
+            <select id="tFilterStatus">
+              <option value="">All Status</option>
+              <option>Draft</option><option>Dispatched</option><option>Completed</option><option>Cancelled</option>
+            </select>
+            <button class="btn btn-light" id="tFilterApply">Filter</button>
+          </div>
+          <button class="btn btn-primary" id="addTripBtn">+ New Trip</button>
+        </div>
+        <div class="table-wrap"><table id="tripsTable"><thead><tr>
+          <th>ID</th><th>Route</th><th>Cargo (kg)</th><th>Distance</th><th>Vehicle</th><th>Driver</th><th>Status</th><th>Actions</th>
+        </tr></thead><tbody></tbody></table></div>
+      </section>
+
+      <!-- ---------- MY BOOKINGS (customer) ---------- -->
+      <section id="view-bookings" class="view hidden">
+        <div class="view-toolbar">
+          <div></div>
+          <button class="btn btn-primary" id="addBookingBtn">+ New Booking</button>
+        </div>
+        <div class="table-wrap"><table id="bookingsTable"><thead><tr>
+          <th>ID</th><th>Route</th><th>Cargo (kg)</th><th>Distance</th><th>Status</th><th>Cost</th><th>Actions</th>
+        </tr></thead><tbody></tbody></table></div>
+      </section>
+
+      <!-- ---------- MAINTENANCE ---------- -->
+      <section id="view-maintenance" class="view hidden">
+        <div class="view-toolbar">
+          <div></div>
+          <button class="btn btn-primary" id="addMaintenanceBtn">+ Log Maintenance</button>
+        </div>
+        <div class="table-wrap"><table id="maintenanceTable"><thead><tr>
+          <th>ID</th><th>Vehicle</th><th>Title</th><th>Cost</th><th>Status</th><th>Created</th><th>Actions</th>
+        </tr></thead><tbody></tbody></table></div>
+      </section>
+
+      <!-- ---------- FUEL & EXPENSES ---------- -->
+      <section id="view-fuel" class="view hidden">
+        <div class="grid-2">
+          <div class="card">
+            <div class="view-toolbar-inline">
+              <h3>Fuel Logs</h3>
+              <button class="btn btn-primary btn-sm" id="addFuelBtn">+ Add Fuel Log</button>
+            </div>
+            <div class="table-wrap"><table id="fuelTable"><thead><tr>
+              <th>Vehicle</th><th>Liters</th><th>Cost</th><th>Date</th>
+            </tr></thead><tbody></tbody></table></div>
+          </div>
+          <div class="card">
+            <div class="view-toolbar-inline">
+              <h3>Other Expenses</h3>
+              <button class="btn btn-primary btn-sm" id="addExpenseBtn">+ Add Expense</button>
+            </div>
+            <div class="table-wrap"><table id="expensesTable"><thead><tr>
+              <th>Vehicle</th><th>Type</th><th>Amount</th><th>Date</th>
+            </tr></thead><tbody></tbody></table></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- REPORTS ---------- -->
+      <section id="view-reports" class="view hidden">
+        <div class="view-toolbar">
+          <h3>Fleet Utilization: <span id="reportUtilization">0%</span></h3>
+          <button class="btn btn-light" id="exportCsvBtn">⬇ Export CSV</button>
+        </div>
+        <div class="table-wrap"><table id="reportsTable"><thead><tr>
+          <th>Vehicle</th><th>Status</th><th>Distance</th><th>Fuel (L)</th><th>Fuel Cost</th>
+          <th>Efficiency (km/L)</th><th>Maint. Cost</th><th>Other Exp.</th><th>Op. Cost</th><th>Revenue</th><th>Trips</th><th>ROI %</th>
+        </tr></thead><tbody></tbody></table></div>
+      </section>
+
+      <!-- ---------- USERS (fleet manager) ---------- -->
+      <section id="view-users" class="view hidden">
+        <div class="table-wrap"><table id="usersTable"><thead><tr>
+          <th>Name</th><th>Email</th><th>Role</th><th>Contact</th><th>Status</th><th>Actions</th>
+        </tr></thead><tbody></tbody></table></div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- ===================== MODAL ===================== -->
+<div id="modalOverlay" class="modal-overlay hidden">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Title</h3>
+      <button id="modalClose" class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
